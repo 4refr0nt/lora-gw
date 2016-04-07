@@ -35,27 +35,10 @@ var rx_en= config.rx;
 var tx_en= config.tx;
 ////////////////////////////////////////////////
 
-var mraa = require('mraa');
+var mraa  = require('mraa');
+var modem = require('./lib/modem');
+
 var version = "0.1.0";
-
-var t = Object.create(null)
-
-t.reset = function(n) {
-  if (dev == 1) {  // NiceRF
-    var tx = new mraa.Gpio(tx_en);
-    tx.dir(mraa.DIR_OUT);
-    tx.write(tx_en, 0);
-
-    var rx = new mraa.Gpio(rx_en);
-    rx.dir(mraa.DIR_OUT);
-    rx.write(rx_en, 0);
-  }
-
-}
-t.init = function(n) {
-        console.log('LoRa Gateway Version: ' + version + ' started.');
-        console.log('MRAA Version: ' + mraa.getVersion());
-}
 
 
 /*
@@ -69,5 +52,5 @@ buf2 = x.write(buf)
 console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
 */
 
-t.reset();      // reset RF module
-t.init();       // initialize RF module
+modem.reset();      // reset RF module
+modem.init();       // initialize RF module
