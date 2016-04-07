@@ -22,6 +22,7 @@
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+"use restrict";
 ////////////////////////////////////////////////
 var config = require("./config");
 var host = config.host;
@@ -49,7 +50,7 @@ t.reset = function(n) {
     rx.dir(mraa.DIR_OUT);
     rx.write(rx_en, 0);
   }
-    
+
 }
 t.init = function(n) {
         console.log('LoRa Gateway Version: ' + version + ' started.');
