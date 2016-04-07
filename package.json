@@ -1,0 +1,15 @@
+{
+  "name": "lora-gw",
+  "version": "0.1.0",
+  "description": "LoRaWAN gateway",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "4refr0nt@gmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "mraa": "^0.10.1"
+  }
+}
