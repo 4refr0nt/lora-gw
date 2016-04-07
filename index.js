@@ -2,7 +2,14 @@
 /*
  * Author: Victor Brutskiy <4refr0nt@gmail.com>
  * Copyright (c) 2016
- *
+ * _           _____    __          __     _   _             _
+ *| |         |  __ \   \ \        / /\   | \ | |           | |
+ *| |     ___ | |__) |__ \ \  /\  / /  \  |  \| |   __ _  __ _| |_ _____      ____ _ _   _
+ *| |    / _ \|  _  // _` \ \/  \/ / /\ \ | . ` |  / _` |/ _` | __/ _ \ \ /\ / / _` | | | |
+ *| |___| (_) | | \ \ (_| |\  /\  / ____ \| |\  | | (_| | (_| | ||  __/\ V  V / (_| | |_| |
+ *|______\___/|_|  \_\__,_| \/  \/_/    \_\_| \_|  \__, |\__,_|\__\___| \_/\_/ \__,_|\__, |
+ *                                                  __/ |                             __/ |
+ *                                                 |___/                             |___/
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -26,15 +33,16 @@
 ////////////////////////////////////////////////
 CoffeeScript = require("coffee-script");
 CoffeeScript.register();
-var config = require("./config");
-////////////////////////////////////////////////
-
-// var mraa  = require('mraa');
-var modem = require('./lib/modem');
-modem.init(config);
+var mraa     = require("mraa");
+var config   = require("./config");
+var modem    = require('./lib/modem');
 
 var version = "0.1.0";
 
+console.log('LoRa Gateway Version: ' + version + ' started.');
+console.log('MRAA Version: ' + mraa.getVersion());
+
+modem.init(config);       // initialize RF module
 
 /*
 x = new mraa.Spi(0)
@@ -47,5 +55,3 @@ buf2 = x.write(buf)
 console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
 */
 
-// modem.reset();      // reset RF module
-// modem.init();       // initialize RF module

@@ -1,26 +1,23 @@
 /*
- *  ######   #######  ##    ## ######## ####  ######
- * ##    ## ##     ## ###   ## ##        ##  ##    ##
- * ##       ##     ## ####  ## ##        ##  ##
- * ##       ##     ## ## ## ## ######    ##  ##   ####
- * ##       ##     ## ##  #### ##        ##  ##    ##
- * ##    ## ##     ## ##   ### ##        ##  ##    ##
- *  ######   #######  ##    ## ##       ####  ######
- *
+ *                  __ _
+ *                 / _(_)
+ *  ___ ___  _ __ | |_ _  __ _
+ * / __/ _ \| '_ \|  _| |/ _` |
+ *| (_| (_) | | | | | | | (_| |
+ * \___\___/|_| |_|_| |_|\__, |
+ *                        __/ |
+ *                       |___/
  * User defined section
  */
 
 module.exports = {
-  host : 'croft.thethings.girovito.nl',
-  port : 1700,
-  // dev: 1 - NiceRF, 2 - HopeRF
-  dev  : 1,             
-  // lcd: 1 - i2c, 0 - no LCD
-  lcd  : 1, 
-  freq : 868.1,
-  // gwID will be added to MAC address
-  gwID : 0x0001,
-  // RX_EN and TX_EN pins used only for NiceRF
-  tx   : 2, // GPIO2 IO27
-  rx   : 3  // GPIO3 IO22
+  host   : 'croft.thethings.girovito.nl', // Network Server TTN:croft.thethings.girovito.nl
+  port   : 1700,                 // UDP data port on Network Server
+  dev    : 'NiceRF',             // NiceRF or HopeRF
+  lcd    : 1,                    // lcd: 1 - i2c, 0 - no LCD
+  freq   : 868.1,                // freq
+  gwID   : 0x0001,               // gwID will be added to MAC address
+  reset  : 0,                    // modem RESET connected to Rpi GPIO0 IO
+  tx_en  : 2,                    // modem TX_EN connected to Rpi GPIO2 IO27 - only for NiceRF
+  rx_en  : 3                     // modem RX_EN connected to Rpi GPIO3 IO22 - only for NiceRF
 }
