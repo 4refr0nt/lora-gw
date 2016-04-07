@@ -30,7 +30,8 @@ var config = require("./config");
 ////////////////////////////////////////////////
 
 // var mraa  = require('mraa');
-var modem = require('./lib/modem').init(config);
+var modem = require('./lib/modem');
+modem.init(config);
 
 var version = "0.1.0";
 

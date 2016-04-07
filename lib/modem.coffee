@@ -21,11 +21,11 @@ Spi =
   burstRead:(address, pointer, len)->
 
   burstWrite:(address, pointer, len)->
+    @
 
-reg = 1
-val = 0
 
-console.log Spi.register( reg, val)
+
+
 
 module.exports =
   ###*
