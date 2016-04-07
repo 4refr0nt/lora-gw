@@ -24,19 +24,13 @@
  */
 "use restrict";
 ////////////////////////////////////////////////
+CoffeeScript = require("coffee-script");
+CoffeeScript.register();
 var config = require("./config");
-var host = config.host;
-var port = config.port;
-var dev  = config.dev;
-var lcd  = config.lcd;
-var freq = config.freq;
-var gwID = config.gwID;
-var rx_en= config.rx;
-var tx_en= config.tx;
 ////////////////////////////////////////////////
 
-var mraa  = require('mraa');
-var modem = require('./lib/modem');
+// var mraa  = require('mraa');
+var modem = require('./lib/modem').init(config);
 
 var version = "0.1.0";
 
@@ -52,5 +46,5 @@ buf2 = x.write(buf)
 console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
 */
 
-modem.reset();      // reset RF module
-modem.init();       // initialize RF module
+// modem.reset();      // reset RF module
+// modem.init();       // initialize RF module
