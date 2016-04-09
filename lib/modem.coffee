@@ -101,10 +101,10 @@ module.exports =
       @tx_en = gpio @opt.tx_en,  mraa.DIR_OUT, 0
       # rx
       @rx_en = gpio @opt.rx_en,  mraa.DIR_OUT, 0
-      console.log '-> NiceRF TX and RX disabled'
+      Bus.emit 'Logger', '-> NiceRF TX and RX disabled'
     # reset
     resetModule @opt.reset, ->
-      console.log '-> Transceiver RESET: Success'
+      Bus.emit 'Logger', '-> Transceiver RESET: Success'
     @
 
   onRecive:(req)->

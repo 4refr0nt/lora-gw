@@ -32,15 +32,18 @@
 ////////////////////////////////////////////////
 CoffeeScript = require("coffee-script");
 CoffeeScript.register();
-var mraa     = require("mraa");
+// var mraa     = require("mraa");
 var config   = require("./config");
 var modem    = require('./lib/modem');
 
 var version = "0.1.0";
 
 console.log('LoRa Gateway Version: ' + version + ' started.');
-console.log('MRAA Version: ' + mraa.getVersion());
 
+modem.Bus.on ('Logger', function(msg){
+  console.log( msg );
+  // console.log('MRAA Version: ' + mraa.getVersion());
+});
 modem.Bus.on ('Resets', function(){
   console.log ('-> Transceiver RESETs');
 });
