@@ -7,7 +7,6 @@
 #
 'use restrict'
 mraa  = require 'mraa'
-sleep = require 'sleep'
 #m    = require 'jsupm_sx1276'
 
 debug = true
