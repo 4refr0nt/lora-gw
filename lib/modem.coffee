@@ -40,8 +40,8 @@ resetModule = (pin, cb)->
     setTimeout ->
       Lock = false
       cb()
-    , 20000 # 20ms
-  , 10000 # 10ms
+    , 20 # 20ms
+  , 10 # 10ms
 
 
 ###*
