@@ -41,7 +41,11 @@ var version = "0.1.0";
 console.log('LoRa Gateway Version: ' + version + ' started.');
 console.log('MRAA Version: ' + mraa.getVersion());
 
+modem.Bus.on 'Resets'
+  console.log '-> Transceiver RESETs'
+
 modem.init(config);       // initialize RF module
+
 
 //var myDigitalPin = new mraa.Gpio(11); //setup digital read on pin 6
 //myDigitalPin.dir(mraa.DIR_IN); //set the gpio direction to input

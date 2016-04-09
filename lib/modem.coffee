@@ -14,6 +14,8 @@ modemEvents = new EventEmitter()
 
 debug = true
 Lock = false
+
+
 ###*
  * @param {Number} pin [real pin on pcb]
  * @param {Number} dir [pin direction]
@@ -43,7 +45,8 @@ resetModule = (pin, cb)->
     Reset.write 1
     setTimeout ->
       Lock = false
-      cb()
+      modemEvents.emit 'Resets'
+      cb() if typeof cb is "function"
     , 20 # 20ms
   , 10 # 10ms
 
@@ -101,7 +104,6 @@ module.exports =
     # reset
     resetModule @opt.reset, ->
       console.log '-> Transceiver RESET: Success'
-      modemEvents.emit 'resetDone'
     @
 
   onRecive:(req)->
