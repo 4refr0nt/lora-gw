@@ -11,6 +11,7 @@ sleep = require 'sleep'
 #m    = require 'jsupm_sx1276'
 
 debug = true
+Lock = false
 ###*
  * @param {Number} pin [real pin on pcb]
  * @param {Number} dir [pin direction]
@@ -26,6 +27,21 @@ gpio = (pin, dir, val)->
   Pin.dir dir
   Pin.write val if val isnt undefined
   Pin
+###*
+ * [resetModule description]
+ * @param  {Function} cb [description]
+ * @return {[type]}      [description]
+###
+resetModule = (pin, cb)->
+  Lock = true
+  Reset = gpio pin, mraa.DIR_OUT, 0
+  setTimeout ->
+    Reset.write 1
+    setTimeout ->
+      Lock = false
+      cb()
+    , 20000 # 20ms
+  , 10000 # 10ms
 
 
 ###*
@@ -71,14 +87,15 @@ module.exports =
       @rx_en = gpio @opt.rx_en,  mraa.DIR_OUT, 0
       console.log '-> NiceRF TX and RX disabled'
     # reset
-    @reset = new mraa.Gpio(@opt.reset)
-    @reset.dir mraa.DIR_OUT
-    @reset.write 0
-    sleep.usleep 10000 # 10ms
-    @reset.write 1
-    sleep.usleep 20000 # 20ms
-    console.log '-> Transceiver RESET: Success'
+    resetModule @opt.reset, ->
+      console.log '-> Transceiver RESET: Success'
 
+    # @reset = new mraa.Gpio(@opt.reset)
+    # @reset.dir mraa.DIR_OUT
+    # @reset.write 0
+    # sleep.usleep 10000 # 10ms
+    # @reset.write 1
+    # sleep.usleep 20000 # 20ms
     @
 
   onRecive:(req)->
