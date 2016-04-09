@@ -11,7 +11,26 @@ sleep = require 'sleep'
 #m    = require 'jsupm_sx1276'
 
 debug = true
+###*
+ * @param {Number} pin [real pin on pcb]
+ * @param {Number} dir [pin direction]
+ * @param {Number} val [value]
+ * @return rmaa Pin object
+###
+gpio = (pin, dir, val)->
+  try
+    Pin = new mraa.Gpio pin
+  catch e
+    throw new Error "wrong pin", e
 
+  Pin.dir dir
+  Pin.write val if val isnt undefined
+  Pin
+
+
+###*
+ *
+###
 Spi =
   inOut: (data)->
     @
@@ -38,6 +57,8 @@ module.exports =
     @reset()
     @
 
+
+
   ###*
    * [reset description]
    * @return {[type]} [description]
@@ -45,13 +66,9 @@ module.exports =
   reset: ->
     if @opt.dev is 'NiceRF'
       # tx
-      @tx = new mraa.Gpio(@opt.tx_en)
-      @tx.dir mraa.DIR_OUT
-      @tx.write 0
+      @tx_en = gpio @opt.tx_en,  mraa.DIR_OUT, 0
       # rx
-      @rx = new mraa.Gpio(@opt.rx_en)
-      @rx.dir mraa.DIR_OUT
-      @rx.write 0
+      @rx_en = gpio @opt.rx_en,  mraa.DIR_OUT, 0
       console.log '-> NiceRF TX and RX disabled'
     # reset
     @reset = new mraa.Gpio(@opt.reset)
@@ -70,4 +87,3 @@ module.exports =
 
   send:(req)->
     @
-
