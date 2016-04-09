@@ -98,9 +98,10 @@ module.exports =
   reset: ->
     if @opt.dev is 'NiceRF'
       # tx
-      @tx_en = gpio @opt.tx_en,  mraa.DIR_OUT, 0
-      # rx
-      @rx_en = gpio @opt.rx_en,  mraa.DIR_OUT, 0
+      ['tx_en', 'rx_en' ].forEach (n)-> @[n] =  gpio @opt[n],  mraa.DIR_OUT, 0
+      # @tx_en = gpio @opt.tx_en,  mraa.DIR_OUT, 0
+      # # rx
+      # @rx_en = gpio @opt.rx_en,  mraa.DIR_OUT, 0
       Bus.emit 'Logger', '-> NiceRF TX and RX disabled'
     # reset
     resetModule @opt.reset, ->
