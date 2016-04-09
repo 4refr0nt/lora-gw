@@ -7,6 +7,9 @@
 #
 'use restrict'
 mraa  = require 'mraa'
+EventEmitter = require('events')
+
+modemEvents = new EventEmitter()
 #m    = require 'jsupm_sx1276'
 
 debug = true
@@ -64,6 +67,15 @@ Spi =
     @
 
 module.exports =
+  # event bus
+  # https://nodejs.org/api/events.html
+  Bus: modemEvents
+  # events
+  events:->
+    modemEvents.on 'reset', @reset
+    @
+
+
   ###*
    * [init description]
    * @param  {[type]} config [description]
@@ -71,10 +83,9 @@ module.exports =
   ###
   init:(@opt) ->
     # call reset first
+    @events()
     @reset()
     @
-
-
 
   ###*
    * [reset description]
@@ -90,6 +101,7 @@ module.exports =
     # reset
     resetModule @opt.reset, ->
       console.log '-> Transceiver RESET: Success'
+      modemEvents.emit 'resetDone'
     @
 
   onRecive:(req)->
