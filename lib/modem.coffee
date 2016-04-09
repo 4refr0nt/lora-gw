@@ -27,6 +27,8 @@ gpio = (pin, dir, val)->
   Pin.dir dir
   Pin.write val if val isnt undefined
   Pin
+
+
 ###*
  * [resetModule description]
  * @param  {Function} cb [description]
@@ -45,7 +47,8 @@ resetModule = (pin, cb)->
 
 
 ###*
- *
+ * [Spi description]
+ * @type {[type]}
 ###
 Spi =
   inOut: (data)->
@@ -55,7 +58,6 @@ Spi =
     if val is undefined
     else
       'a'
-
 
   burstRead:(address, pointer, len)->
 
@@ -89,13 +91,6 @@ module.exports =
     # reset
     resetModule @opt.reset, ->
       console.log '-> Transceiver RESET: Success'
-
-    # @reset = new mraa.Gpio(@opt.reset)
-    # @reset.dir mraa.DIR_OUT
-    # @reset.write 0
-    # sleep.usleep 10000 # 10ms
-    # @reset.write 1
-    # sleep.usleep 20000 # 20ms
     @
 
   onRecive:(req)->
