@@ -42,7 +42,6 @@ console.log('LoRa Gateway Version: ' + version + ' started.');
 
 modem.Bus.on ('Logger', function(msg){
   console.log( msg );
-  // console.log('MRAA Version: ' + mraa.getVersion());
 });
 modem.Bus.on ('Resets', function(){
   console.log ('-> Transceiver RESETs');
