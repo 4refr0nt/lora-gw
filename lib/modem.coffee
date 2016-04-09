@@ -9,7 +9,7 @@
 mraa  = require 'mraa'
 EventEmitter = require('events')
 
-modemEvents = new EventEmitter()
+Bus = new EventEmitter()
 #m    = require 'jsupm_sx1276'
 
 debug = true
@@ -45,7 +45,7 @@ resetModule = (pin, cb)->
     Reset.write 1
     setTimeout ->
       Lock = false
-      modemEvents.emit 'Resets'
+      Bus.emit 'Resets'
       cb() if typeof cb is "function"
     , 20 # 20ms
   , 10 # 10ms
@@ -72,10 +72,10 @@ Spi =
 module.exports =
   # event bus
   # https://nodejs.org/api/events.html
-  Bus: modemEvents
+  Bus: Bus
   # events
   events:->
-    modemEvents.on 'reset', @reset
+    Bus.on 'reset', @reset
     @
 
 
@@ -85,6 +85,7 @@ module.exports =
    * @return {[type]}        [description]
   ###
   init:(@opt) ->
+    Bus.emit 'Logger', 'MRAA Version: ' + mraa.getVersion()
     # call reset first
     @events()
     @reset()
