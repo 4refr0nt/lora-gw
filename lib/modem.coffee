@@ -7,11 +7,54 @@
 #
 'use restrict'
 mraa  = require 'mraa'
-sleep = require 'sleep'
+EventEmitter = require('events')
+
+Bus = new EventEmitter()
 #m    = require 'jsupm_sx1276'
 
 debug = true
+Lock = false
 
+
+###*
+ * @param {Number} pin [real pin on pcb]
+ * @param {Number} dir [pin direction]
+ * @param {Number} val [value]
+ * @return rmaa Pin object
+###
+gpio = (pin, dir, val)->
+  try
+    Pin = new mraa.Gpio pin
+  catch e
+    throw new Error "wrong pin", e
+
+  Pin.dir dir
+  Pin.write val if val isnt undefined
+  Pin
+
+
+###*
+ * [resetModule description]
+ * @param  {Function} cb [description]
+ * @return {[type]}      [description]
+###
+resetModule = (pin, cb)->
+  Lock = true
+  Reset = gpio pin, mraa.DIR_OUT, 0
+  setTimeout ->
+    Reset.write 1
+    setTimeout ->
+      Lock = false
+      Bus.emit 'Resets'
+      cb() if typeof cb is "function"
+    , 20 # 20ms
+  , 10 # 10ms
+
+
+###*
+ * [Spi description]
+ * @type {[type]}
+###
 Spi =
   inOut: (data)->
     @
@@ -21,20 +64,30 @@ Spi =
     else
       'a'
 
-
   burstRead:(address, pointer, len)->
 
   burstWrite:(address, pointer, len)->
     @
 
 module.exports =
+  # event bus
+  # https://nodejs.org/api/events.html
+  Bus: Bus
+  # events
+  events:->
+    Bus.on 'reset', @reset
+    @
+
+
   ###*
    * [init description]
    * @param  {[type]} config [description]
    * @return {[type]}        [description]
   ###
   init:(@opt) ->
+    Bus.emit 'Logger', 'MRAA Version: ' + mraa.getVersion()
     # call reset first
+    @events()
     @reset()
     @
 
@@ -44,24 +97,12 @@ module.exports =
   ###
   reset: ->
     if @opt.dev is 'NiceRF'
-      # tx
-      @tx = new mraa.Gpio(@opt.tx_en)
-      @tx.dir mraa.DIR_OUT
-      @tx.write 0
-      # rx
-      @rx = new mraa.Gpio(@opt.rx_en)
-      @rx.dir mraa.DIR_OUT
-      @rx.write 0
-      console.log '-> NiceRF TX and RX disabled'
+      # tx rx disable
+      ['tx_en', 'rx_en' ].forEach (n)=> @[n] =  gpio @opt[n],  mraa.DIR_OUT, 0
+      Bus.emit 'Logger', '-> NiceRF TX and RX disabled'
     # reset
-    @reset = new mraa.Gpio(@opt.reset)
-    @reset.dir mraa.DIR_OUT
-    @reset.write 0
-    sleep.usleep 10000 # 10ms
-    @reset.write 1
-    sleep.usleep 20000 # 20ms
-    console.log '-> Transceiver RESET: Success'
-
+    resetModule @opt.reset, ->
+      Bus.emit 'Logger', '-> Transceiver RESET: Success'
     @
 
   onRecive:(req)->
@@ -70,4 +111,3 @@ module.exports =
 
   send:(req)->
     @
-

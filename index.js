@@ -32,27 +32,35 @@
 ////////////////////////////////////////////////
 CoffeeScript = require("coffee-script");
 CoffeeScript.register();
-var mraa     = require("mraa");
+// var mraa     = require("mraa");
+var debug = true;
 var config   = require("./config");
 var modem    = require('./lib/modem');
 
 var version = "0.1.0";
 
 console.log('LoRa Gateway Version: ' + version + ' started.');
-console.log('MRAA Version: ' + mraa.getVersion());
+
+modem.Bus.on ('Logger', function(msg){
+  if (debug) console.log( msg );
+});
+modem.Bus.on ('Resets', function(){
+  console.log ('-> Transceiver RESETs');
+});
 
 modem.init(config);       // initialize RF module
+
 
 //var myDigitalPin = new mraa.Gpio(11); //setup digital read on pin 6
 //myDigitalPin.dir(mraa.DIR_IN); //set the gpio direction to input
 
 
-x = new mraa.Spi(0)
-buf = new Buffer(4)
-buf[0] = 0xf4
-buf[1] = 0x2e
-buf[2] = 0x3e
-buf[3] = 0x4e
-buf2 = x.write(buf)
-console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
+// x = new mraa.Spi(0)
+// buf = new Buffer(4)
+// buf[0] = 0xf4
+// buf[1] = 0x2e
+// buf[2] = 0x3e
+// buf[3] = 0x4e
+// buf2 = x.write(buf)
+// console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
 
