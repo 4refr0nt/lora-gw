@@ -47,12 +47,12 @@ modem.init(config);       // initialize RF module
 //myDigitalPin.dir(mraa.DIR_IN); //set the gpio direction to input
 
 
-x = new mraa.Spi(0)
-buf = new Buffer(4)
-buf[0] = 0xf4
-buf[1] = 0x2e
-buf[2] = 0x3e
-buf[3] = 0x4e
-buf2 = x.write(buf)
-console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
+// x = new mraa.Spi(0)
+// buf = new Buffer(4)
+// buf[0] = 0xf4
+// buf[1] = 0x2e
+// buf[2] = 0x3e
+// buf[3] = 0x4e
+// buf2 = x.write(buf)
+// console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
 
