@@ -15,6 +15,9 @@
   },
   "dependencies": {
     "coffee-script": "^1.10.0",
-    "getmac": "^1.0.7"
+    "getmac": "^1.0.7",
+    "jsupm_sx1276": "^0.4.1",
+    "mraa": "^0.10.1",
+    "upm": "0.0.20"
   }
 }
