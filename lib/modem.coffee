@@ -6,9 +6,10 @@
 # |_| |_| |_|\___/ \__,_|\___|_| |_| |_|
 #
 'use restrict'
-mraa = require 'mraa'
-upm  = require 'upm'
-m    = require 'jsupm_sx1276'
+mraa  = require 'mraa'
+sleep = require 'sleep'
+#m    = require 'jsupm_sx1276'
+
 debug = true
 
 Spi =
@@ -34,7 +35,7 @@ module.exports =
   ###
   init:(@opt) ->
     # call reset first
-    @reset @opt
+    @reset()
     @
 
   ###*
@@ -44,21 +45,22 @@ module.exports =
   reset: ->
     if @opt.dev is 'NiceRF'
       # tx
-      @tx = mraa.Gpio @opt.tx_en
+      @tx = new mraa.Gpio(@opt.tx_en)
       @tx.dir mraa.DIR_OUT
-      @tx.write @opt.tx_en, 0
+      @tx.write 0
       # rx
-      @rx = mraa.Gpio @opt.rx_en
+      @rx = new mraa.Gpio(@opt.rx_en)
       @rx.dir mraa.DIR_OUT
-      @rx.write @opt.rx_en, 0
+      @rx.write 0
+      console.log '-> NiceRF TX and RX disabled'
     # reset
-    @reset = mraa.Gpio @opt.reset
+    @reset = new mraa.Gpio(@opt.reset)
     @reset.dir mraa.DIR_OUT
-    @reset.write @opt.reset, 0
-    delay 10
-    @reset.write @opt.reset, 1
-    delay 20
-
+    @reset.write 0
+    sleep.usleep 10000 # 10ms
+    @reset.write 1
+    sleep.usleep 20000 # 20ms
+    console.log '-> Transceiver RESET: Success'
 
     @
 

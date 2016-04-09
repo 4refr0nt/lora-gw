@@ -17,7 +17,7 @@ module.exports = {
   lcd    : 1,                    // lcd: 1 - i2c, 0 - no LCD
   freq   : 868.1,                // freq
   gwID   : 0x0001,               // gwID will be added to MAC address
-  reset  : 0,                    // modem RESET connected to Rpi GPIO0 IO
-  tx_en  : 2,                    // modem TX_EN connected to Rpi GPIO2 IO27 - only for NiceRF
-  rx_en  : 3                     // modem RX_EN connected to Rpi GPIO3 IO22 - only for NiceRF
+  reset  : 11,                   // modem RESET connected to WiringPi GPIO0 BCM IO17(real pin 11)
+  tx_en  : 13,                   // modem TX_EN connected to WiringPi GPIO2 BCM IO27(real pin 13) - only for NiceRF
+  rx_en  : 15                    // modem RX_EN connected to WiringPi GPIO3 BCM IO22(real pin 15) - only for NiceRF
 }

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /*
  * Author: Victor Brutskiy <4refr0nt@gmail.com>
  * Copyright (c) 2016
@@ -44,7 +43,10 @@ console.log('MRAA Version: ' + mraa.getVersion());
 
 modem.init(config);       // initialize RF module
 
-/*
+//var myDigitalPin = new mraa.Gpio(11); //setup digital read on pin 6
+//myDigitalPin.dir(mraa.DIR_IN); //set the gpio direction to input
+
+
 x = new mraa.Spi(0)
 buf = new Buffer(4)
 buf[0] = 0xf4
@@ -53,5 +55,4 @@ buf[2] = 0x3e
 buf[3] = 0x4e
 buf2 = x.write(buf)
 console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
-*/
 
