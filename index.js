@@ -41,7 +41,7 @@ var version = "0.1.0";
 console.log('LoRa Gateway Version: ' + version + ' started.');
 console.log('MRAA Version: ' + mraa.getVersion());
 
-modem.Bus.on 'Resets'
+modem.Bus.on 'Resets', ->
   console.log '-> Transceiver RESETs'
 
 modem.init(config);       // initialize RF module
