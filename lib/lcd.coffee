@@ -14,15 +14,33 @@
 # MMMMMMMMMMM MMMMMMMMMMM MMMMMMMMMMM
 #
 'use restrict'
+Proto        = require './proto'
 EventEmitter = require 'events'
-lcdObj       = require 'jsupm_i2clcd'
+# lcdObj       = require 'jsupm_i2clcd'
 img          = require './images/image'
 
-# module vars
-lcd        = null
-lcd_enable = false;
+lcd = new Proto
+  version: '0.0.0'
+  events:
+    Open    : 'Open'
+    Enable  : 'Enable'
+    DrawLogo : 'DrawLogo'
+    Disable : 'Disable'
 
-debug      = true
+  Open:(@opt) ->
+    if @opt.lcd.enabled
+      @Bus.emit 'log', 'LCD: Init...'
+      Bus.emit 'Enable'
+    @
+
+  Enable:-> @
+  disable:-> @
+  DrawLogo:-> @
+  draw:-> @
+
+
+console.log 'LCD', lcd
+
 
 Bus = new EventEmitter()
 
@@ -45,17 +63,17 @@ module.exports =
    * @return {[type]}        [description]
   ###
   open:(@opt) ->
-    if !@opt.lcd.enabled
-      return
+    return unless @opt.lcd.enabled
     @events()
     # TODO: Logger event on mainBus
-    console.log 'LCD: Init...'
+    Bus.emit 'log', 'LCD: Init...'
     debug = @opt.debug
     lcd_enabled = false
     try
       lcd_enabled = @opt.lcd.enabled
     catch e
       Bus.emit 'Disable'
+
     if lcd_enabled
       Bus.emit 'Enable'
     else
