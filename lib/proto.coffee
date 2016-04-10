@@ -3,15 +3,18 @@
 ###
 'use restrict'
 EventEmitter = require 'events'
-_ = require 'lodash'
 
 class Object
   version       : '0.0.1'
   Bus           : new EventEmitter()
-
+  ###*
+   * [createEvents]
+   * @return {object} [this]
+   * events:
+   *   test: 'test'
+   * on emit 'test' call @test()
+  ###
   createEvents  : ->
-    # events
-    # console.log @events
     for event of @events
       @Bus.on event, @[event]  if typeof @[event] is 'function'
     @
