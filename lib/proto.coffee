@@ -11,7 +11,7 @@ class Object
 
   createEvents  : ->
     # events
-    console.log @events
+    # console.log @events
     for event of @events
       @Bus.on event, @[event]  if typeof @[event] is 'function'
     @
