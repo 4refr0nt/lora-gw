@@ -1,6 +1,10 @@
 /*
- * Author: Victor Brutskiy <4refr0nt@gmail.com>
- * Copyright (c) 2016
+ * @authors:
+ *    Victor Brutskiy <4refr0nt@gmail.com>
+ *    Alex   Suslov   <AlexSuslov@me.com>
+ *    Copyright (c) 2016
+ *
+ * @license: MIT
  * _           _____    __          __     _   _             _
  *| |         |  __ \   \ \        / /\   | \ | |           | |
  *| |     ___ | |__) |__ \ \  /\  / /  \  |  \| |   __ _  __ _| |_ _____      ____ _ _   _
@@ -30,30 +34,85 @@
  */
 "use restrict";
 ////////////////////////////////////////////////
-CoffeeScript = require("coffee-script");
+CoffeeScript     = require("coffee-script");
 CoffeeScript.register();
-// var mraa     = require("mraa");
-var debug = true;
-var config   = require("./config");
-var modem    = require('./lib/modem');
+var EventEmitter = require('events')
+var config       = require("./config");
+var modem        = require('./lib/modem');
+var lcd          = require('./lib/lcd');
 
-var version = "0.1.0";
+// TODO 'net' module for UDP send to NetworkServer and DebugServer
+// TODO 'mqtt' module for send to monitoring MQTTserver
+// TODO index.js -> index.coffee + gulp tasks
 
-console.log('LoRa Gateway Version: ' + version + ' started.');
+mainBus = new EventEmitter()
 
-modem.Bus.on ('Logger', function(msg){
-  if (debug) console.log( msg );
+var version           = "0.1.0";
+var debug             = config.debug;
+
+function events () {
+  mainBus.on ('Logger', function(msg, always){
+    always = typeof always !== 'undefined' ? always : false;
+    if (always) console.log('');
+    if (debug || always) console.log( msg );
+  });
+
+  mainBus.on ('Exit', function(msg){
+    mainBus.emit('Logger', msg, true)
+    // TODO destroy
+    process.exit(0);
+  });
+
+  modem.Bus.on ('Resets', function(){
+    console.log ('-> Transceiver RESETs');
+  });
+}
+process.on('SIGINT', function() {
+  /*
+    TODO: 'destroy' and cb 'destroyed' events for lcd and modem
+    lcd = null;
+    lcdObj.cleanUp();
+    lcdObj = null;
+    console.log("Exiting...");
+    */
+  process.exit(0); // TODO move to last 'destroyed' cb
 });
-modem.Bus.on ('Resets', function(){
-  console.log ('-> Transceiver RESETs');
-});
 
-modem.init(config);       // initialize RF module
+function check_config (cfg) {
+  // TODO more checks
+  if (!cfg) {
+    mainBus.emit('Exit','Config data not found in config.js. Exiting...', true)
+  }
+  var RF_frontend_count = 0;
+  config.RF_frontend.forEach( function(element) {
+    if (element.enabled)
+      if (element.type == 'SPI_SX1276')
+        if (element.brand == 'NiceRF' || element.brand == 'HopeRF')
+          ++RF_frontend_count;
+        else
+          mainBus.emit('Exit','Unknown RF frontend brand ' + element.brand + ' in config.js. Exiting...', true)
+      else
+        mainBus.emit('Exit','Unknown RF frontend type ' + element.type + ' in config.js. Exiting...', true)
+  })
+  if (RF_frontend_count == 0) {
+    mainBus.emit('Exit','No configured RF frontend device found in config.js. Exiting...', true)
+  }
+}
+function main () {
 
+  events();
+
+  mainBus.emit('Logger','LoRa Gateway Version: ' + version + ' started.', true)
+
+  check_config(config);        // check config
+  lcd.open(config);            // initialize LCD module
+  modem.open(config);          // initialize RF  module
+}
+
+main(); // entry point
 
 //var myDigitalPin = new mraa.Gpio(11); //setup digital read on pin 6
 //myDigitalPin.dir(mraa.DIR_IN); //set the gpio direction to input
-
 
 // x = new mraa.Spi(0)
 // buf = new Buffer(4)
