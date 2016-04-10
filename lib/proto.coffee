@@ -6,7 +6,6 @@ EventEmitter = require 'events'
 
 class Object
   version       : '0.0.1'
-  Bus           : new EventEmitter()
   ###*
    * [createEvents]
    * @return {object} [this]
@@ -22,6 +21,9 @@ class Object
   constructor:(@opts)->
     # replace metods and params
     @[n] = @opts[n] for n of @opts
+    # create new Bus
+    @Bus =  new EventEmitter() unless  @Bus
+    # init events
     @createEvents()
     @
 
