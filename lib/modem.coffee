@@ -1,6 +1,6 @@
 # @authors:
 #    Victor Brutskiy <4refr0nt@gmail.com>
-#    Alex   Suslov   <alexsuslov@me.com>
+#    Alex   Suslov   <suslov@me.com>
 #    Copyright (c) 2016
 #
 # @license: MIT       ___
