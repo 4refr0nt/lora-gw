@@ -14,7 +14,7 @@ class Object
    * on emit 'test' call @test()
   ###
   createEvents  : ->
-    @Bus.on e, @[e]  if typeof @[e] is 'function' for e of @events
+    #@Bus.on e, @[e]  if typeof @[e] is 'function' for e of @events
     @
 
   constructor:(@opts)->

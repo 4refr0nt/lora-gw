@@ -1,0 +1,5 @@
+set (libname "sx1276_NiceHope")
+set (libdescription "SX1276 NiceRF/HopeRF LoRa/FSK radio modules")
+set (module_src ${libname}.cxx)
+set (module_h ${libname}.h)
+upm_module_init()

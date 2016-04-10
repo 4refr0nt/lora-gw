@@ -16,7 +16,7 @@
 'use restrict'
 Proto        = require './proto'
 EventEmitter = require 'events'
-# lcdObj       = require 'jsupm_i2clcd'
+lcdObj       = require 'jsupm_i2clcd'
 img          = require './images/image'
 
 lcd = new Proto
@@ -39,8 +39,9 @@ lcd = new Proto
   draw:-> @
 
 
-console.log 'LCD', lcd
+#console.log 'LCD', lcd
 
+LogoTimeout = 2000
 
 Bus = new EventEmitter()
 
@@ -105,9 +106,10 @@ module.exports =
     #if isLCD()
     if true
       Bus.emit 'DrawLogo'
+      console.log 'LCD: Drawing data schedulled'
       setTimeout ->
         Bus.emit 'Draw'
-      , 2000 # 2s
+      , LogoTimeout # 2s
     @
 
   ###*
@@ -136,6 +138,7 @@ module.exports =
   ###
   drawLogo:->
     # TODO lora logo from lora-alliance.com. See: lib/images
+    console.log 'LCD: Drawing logo...'
     logo = new lcdObj.uint8Array img.logo_img.length
     x = 0
     while x < img.logo_img.length
@@ -144,6 +147,7 @@ module.exports =
     lcd.stopscroll()
     lcd.clear()
     lcd.draw logo, 1024
+    console.log 'LCD: Drawing logo: done.'
     @
 
   ###*
@@ -153,6 +157,7 @@ module.exports =
   ###
   draw:->
     # TODO LCD data design
+    console.log 'LCD: Drawing data...'
     lcd.stopscroll()
     lcd.clear();
     lcd.setCursor(0, 0);

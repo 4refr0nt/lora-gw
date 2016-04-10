@@ -38,6 +38,7 @@ CoffeeScript     = require("coffee-script");
 CoffeeScript.register();
 var EventEmitter = require('events')
 var config       = require("./config");
+var hardware     = require('./lib/hardware');
 var modem        = require('./lib/modem');
 var lcd          = require('./lib/lcd');
 
@@ -105,6 +106,8 @@ function main () {
   mainBus.emit('Logger','LoRa Gateway Version: ' + version + ' started.', true)
 
   check_config(config);        // check config
+
+  hardware.info(config);       // get board info
   lcd.open(config);            // initialize LCD module
   modem.open(config);          // initialize RF  module
 }
@@ -123,3 +126,73 @@ main(); // entry point
 // buf2 = x.write(buf)
 // console.log("Sent: " + buf.toString('hex') + ". Received: " + buf2.toString('hex'))
 
+/*
+  ###*
+   * [reset description]
+   * @return {[type]} [description]
+  ###
+  reset:->
+    if @opt.dev is 'NiceRF'
+      # tx rx disable
+      ['tx_en', 'rx_en' ].forEach (n)=> @[n] =  gpio @opt[n],  mraa.DIR_OUT, 0
+      Bus.emit 'Logger', '-> NiceRF TX and RX disabled'
+    # reset
+    resetModule @opt.reset, ->
+      Bus.emit 'Logger', '-> Transceiver RESET: Success'
+    @
+
+###*
+ * @param {Number} pin [real pin on pcb]
+ * @param {Number} dir [pin direction]
+ * @param {Number} val [value]
+ * @return rmaa Pin object
+###
+gpio = (pin, dir, val)->
+  try
+    Pin = new mraa.Gpio pin
+  catch e
+    throw new Error "wrong pin", e
+
+  Pin.dir dir
+  Pin.write val if val isnt undefined
+  Pin
+
+
+###*
+ * [resetModule description]
+ * @param  {Function} cb [description]
+ * @return {[type]}      [description]
+###
+resetModule = (pin, cb)->
+  Lock = true
+  Reset = gpio pin, mraa.DIR_OUT, 0
+  setTimeout ->
+    Reset.write 1
+    setTimeout ->
+      Lock = false
+      Bus.emit 'Resets'
+      cb() if typeof cb is "function"
+    , 20 # 20ms
+  , 10 # 10ms
+
+
+###*
+ * [Spi description]
+ * @type {[type]}
+###
+Spi =
+  inOut: (data)->
+    @
+
+  register:(reg, val)->
+    if val is undefined
+    else
+      'a'
+
+  burstRead:(address, pointer, len)->
+
+  burstWrite:(address, pointer, len)->
+    @
+
+
+*/

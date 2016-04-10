@@ -12,7 +12,7 @@
 'use restrict'
 EventEmitter = require 'events'
 mraa         = require 'mraa'
-sx1276       = require 'jsupm_sx1276_NiceHope'
+sx1276       = require 'jsupm_sx1276'
 
 Bus = new EventEmitter()
 
@@ -23,58 +23,22 @@ rx_timer = null
 debug    = true
 Lock     = false
 
-###*
- * @param {Number} pin [real pin on pcb]
- * @param {Number} dir [pin direction]
- * @param {Number} val [value]
- * @return rmaa Pin object
-###
-gpio = (pin, dir, val)->
-  try
-    Pin = new mraa.Gpio pin
-  catch e
-    throw new Error "wrong pin", e
-
-  Pin.dir dir
-  Pin.write val if val isnt undefined
-  Pin
-
-
-###*
- * [resetModule description]
- * @param  {Function} cb [description]
- * @return {[type]}      [description]
-###
-resetModule = (pin, cb)->
-  Lock = true
-  Reset = gpio pin, mraa.DIR_OUT, 0
-  setTimeout ->
-    Reset.write 1
-    setTimeout ->
-      Lock = false
-      Bus.emit 'Resets'
-      cb() if typeof cb is "function"
-    , 20 # 20ms
-  , 10 # 10ms
-
-
-###*
- * [Spi description]
- * @type {[type]}
-###
-Spi =
-  inOut: (data)->
-    @
-
-  register:(reg, val)->
-    if val is undefined
-    else
-      'a'
-
-  burstRead:(address, pointer, len)->
-
-  burstWrite:(address, pointer, len)->
-    @
+# default RX config
+rxCfg =
+  modem        : sx1276.SX1276.MODEM_LORA,
+  bandwidth    : 125000, # for LoRa available values: [125 kHz, 250 kHz, 500 kHz] * 1000
+  datarate     : 7,      # for LoRa available values: [6: 64, 7: 128, 8: 256, 9: 512, 10: 1024, 11: 2048, 12: 4096 chips]
+  coderate     : 1,      # for LoRa available values: [1: 4/5, 2: 4/6, 3: 4/7, 4: 4/8]
+  bandwidthAfc : 0,      # for LoRa always zero
+  preambleLen  : 8,      # for LoRa: Length in symbols (the hardware adds 4 more symbols)
+  symbTimeout  : 5,      # for LoRa: timeout in symbols
+  fixLen       : false,  # Fixed length packets [false: variable, true: fixed]
+  payloadLen   : 0,      # Sets payload length when fixed lenght is used or 0 for variable packets length
+  crcOn        : true,   # Enables/Disables the CRC [false: OFF, true: ON]
+  freqHopOn    : false,  # Freq hop not yet supported
+  hopPeriod    : 0,      # Freq hop not yet supported
+  iqInverted   : false,  # for LoRa: [false: not inverted, true: inverted]
+  rxContinuous : true    # Sets the reception in continuous mode [false: single mode, true: continuous mode]
 
 module.exports =
   # event bus
@@ -82,65 +46,53 @@ module.exports =
   Bus: Bus
   # events
   events:->
-    Bus.on 'reset', @reset
+    Bus.on 'Open', @open
+    Bus.on 'RX', @receive
     @
 
+  receive: ->
+    console.log 'rf: timer: receive'
+    setTimeout @receive, 250
+    @
+
+  send: (req)->
+    @
 
   ###*
    * [open description]
    * @param  {[type]} config [description]
    * @return {[type]}        [description]
   ###
-  open:(@opt) ->
+  open: (@opt) ->
+    Bus.emit 'Logger', 'rf: modem open...' # TODO - not working
+    console.log 'rf: modem open...'
     @events()
-    debug = @opt.debug # TODO check value
-    Bus.emit 'Logger', 'MRAA Version: ' + mraa.getVersion()
-    m = new sx1276.SX1276_NiceHope
+    debug = @opt.debug
+    #console.log @opt
+    rf = @opt.RF_frontend[0] # TODO several RF frontend
+    #console.log  rf.spi_bus, rf.spi_cs, rf.reset, rf.tx_en, rf.rx_en, rf.dio0
+    try
+      m = new sx1276.SX1276 0x12, 0, 24, 11, 16, 13, 15, 29, 31, 33
+    catch e
+      console.log e
+      process.exit 0
+    console.log 'rf: new ok'
+    #Bus.emit 'Logger', 'rf: detected chip version: ' + m.getChipVersion()
+
+    if m.getChipVersion() == 0x12
+      console.log 'rf: detected chip SX1276'
+    else if m.getChipVersion() == 0x22
+      console.log 'rf: detected known SX1272 chip, but not supported, exiting...'
+      process.exit 0
+    else
+      console.log 'rf: detected unknown unsupported device, exiting...'
+      process.exit 0
+
     m.setChannel 868100000 # 868.1 MHz
-    # TODO All LoRa RF parameters in config
-    # LORA configuration (rx and tx must be configured the same):
-    # Tx output power = 14 dBm
-    # LORA bandwidth = 125000 (can also be 250K and 500K)
-    # LORA spreading factor = 7
-    # LORA coding rate = 1 (4/5)
-    # LORA preamble len = 8
-    # LORA symbol timeout = 5
-    # LORA fixed payload = false
-    # LORA IQ inversion = false
-    # LORA (rx) continuous Rx mode = true
-    #sensor.setTxConfig(sensorObj.SX1276.MODEM_LORA, 14, 0, 125000,
-    #                7, 1, 8, false, true, false, 0, false);
-    #m.setRxConfig sx1276.SX1276.MODEM_LORA, 125000, 7, 1, 0, 8, 5, false, 0, true, false, 0, false, true
-    rx_timer = setInterval ->
-      # TODO receive is underfined
-      #receive m
-      return
-    , 250
-    # call reset first
-    #@reset()
-    @
+    console.log 'rf: setChannel ok'
 
-  ###*
-   * [reset description]
-   * @return {[type]} [description]
-  ###
-  reset:->
-    if @opt.dev is 'NiceRF'
-      # tx rx disable
-      ['tx_en', 'rx_en' ].forEach (n)=> @[n] =  gpio @opt[n],  mraa.DIR_OUT, 0
-      Bus.emit 'Logger', '-> NiceRF TX and RX disabled'
-    # reset
-    resetModule @opt.reset, ->
-      Bus.emit 'Logger', '-> Transceiver RESET: Success'
-    @
+    m.setRxConfig rxCfg.modem, rxCfg.bandwidth, rxCfg.datarate, rxCfg.coderate, rxCfg.bandwidthAfc, rxCfg.preambleLen, rxCfg.symbTimeout, rxCfg.fixLen, rxCfg.payloadLen, rxCfg.crcOn, rxCfg.freqHopOn, rxCfg.hopPeriod, rxCfg.iqInverted, rxCfg.rxContinuous
+    console.log 'rf: setRxConfig ok'
 
-  ###*
-   * [receive description]
-   * @return {[type]} [description]
-  ###
-  receive:(m)->
-    console.log m
-    @
-
-  send:(req)->
+    Bus.emit 'RX', 'rf: done.'
     @
