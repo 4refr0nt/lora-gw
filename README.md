@@ -39,7 +39,7 @@ Node.js LoRa Gateway For Raspberry Pi
 ```
 sudo apt-get update
 sudo apt-get -y install build-essential
-sudo apt-get -y install libpcre3 libpcre3-dev cmake autotools-dev nodejs-dev automake
+sudo apt-get -y install libpcre3 libpcre3-dev cmake autotools-dev nodejs-dev automake python-dev bison
 mkdir -p src
 ```
 * 5.2 Install latest SWIG from source code
@@ -49,7 +49,8 @@ git clone https://github.com/swig/swig.git
 cd swig
 ./autogen.sh
 ./configure
-make install
+make
+sudo make install
 ```
 * 5.3 Build hardware level MRAA library from source code
 ```
