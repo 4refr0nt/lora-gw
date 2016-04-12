@@ -19,28 +19,29 @@ mraa  = require 'mraa'
 
 class Hardware extends Proto
   initialize: (@config)-> @
+  dropLine: -> [0..50].map(->'-').join ''
 
   info : ->
     @Bus.emit 'Logger', 'Hardware: Init...', @config
     mraa.setLogLevel(7) if @config.debug
     console.log """
--------------------------------------------------
-hw: MRAA Version  : #{mraa.getVersion()}
-hw: Board name    : #{mraa.getPlatformName()}
-hw: Platform type : #{mraa.getPlatformType()}
-hw: Pin count     : #{mraa.getPinCount()}
-hw: I2C bus count : #{mraa.getI2cBusCount()}
--------------------------------------------------
+#{@dropLine()}
+hw: MRAA Version  : \t #{mraa.getVersion()}
+hw: Board name    : \t #{mraa.getPlatformName()}
+hw: Platform type : \t #{mraa.getPlatformType()}
+hw: Pin count     : \t #{mraa.getPinCount()}
+hw: I2C bus count : \t #{mraa.getI2cBusCount()}
+#{@dropLine()}
     """
-    @config.RF.forEach ( p, i) ->
+    @config.RF.forEach ( p, i) =>
       console.log """
 RF frontend #{i} pinmaps
-hw: RESET  : #{ mraa.getPinName p.reset }
-hw: SPI CS : #{ mraa.getPinName p.spi_cs }
-hw: DIO0   : #{ mraa.getPinName p.dio0 }
-hw: TX_EN  : #{ mraa.getPinName p.tx_en }
-hw: RX_EN  : #{ mraa.getPinName p.rx_en }
--------------------------------------------------
+hw: RESET  : \t #{ mraa.getPinName p.reset }
+hw: SPI CS : \t #{ mraa.getPinName p.spi_cs }
+hw: DIO0   : \t #{ mraa.getPinName p.dio0 }
+hw: TX_EN  : \t #{ mraa.getPinName p.tx_en }
+hw: RX_EN  : \t #{ mraa.getPinName p.rx_en }
+#{@dropLine()}
 SPI bus mapping for this board:
       """
     p = 0
@@ -48,7 +49,7 @@ SPI bus mapping for this board:
       try
         pName = mraa.getPinName p
         if /SPI/i.test(pName)
-          console.log "hw: pin: " + pName + " " + p
+          console.log "hw: pin: \t" + pName + " \t" + p
       catch e
         console.log e
       p++

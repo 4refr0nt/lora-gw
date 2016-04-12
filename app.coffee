@@ -29,7 +29,7 @@ class App extends Proto
   version: pack.version
 
   events:
-    Logger  : 'log'
+    logger  : 'log'
     exit    : 'exit'
     SIGINT  : 'exit'
   log:(msg, level)->
@@ -75,7 +75,7 @@ class App extends Proto
    * @return @
   ###
   initialize: (@config)->
-    @Bus.emit 'Logger', "LoRa Gateway Version:  #{@version}  started.", 0
+    @Bus.emit 'logger', "LoRa Gateway Version:  #{@version}  started.", 0
     @checkConfig @config
     # modem
     # @modem = new Modem @config
