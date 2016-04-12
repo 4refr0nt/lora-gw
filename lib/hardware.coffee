@@ -12,6 +12,7 @@
  * @copyright 2016
  * @license MIT
 ###
+
 'use restrict'
 
 Proto = require './proto'
