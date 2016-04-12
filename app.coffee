@@ -92,3 +92,4 @@ class App extends Proto
     @
 
 app = new App config
+
