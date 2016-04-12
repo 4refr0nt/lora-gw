@@ -1,0 +1,5 @@
+[user]
+        name = Alex Suslov
+        email = suslov@me.com
+[push]
+        default = simple
