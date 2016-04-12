@@ -13,17 +13,23 @@ class Object
    *   test: 'test'
    * on emit 'test' call @test()
   ###
-  createEvents  : ->
-    #@Bus.on e, @[e]  if typeof @[e] is 'function' for e of @events
+  createEvents : ->
+    for e of @events
+      fn = @[ @events[e] ]
+      # console.log "typeof @['#{fn}']", typeof fn
+      if fn and typeof fn is 'function'
+        @Bus.on e, fn
+      else
+        @Bus.emit 'Logger', "No #{@events[e]} function", 0
     @
 
-  constructor:(@opts)->
-    # replace metods and params
-    @[n] = @opts[n] for n of @opts
+  constructor:( config )->
     # create new Bus
-    @Bus =  new EventEmitter() unless  @Bus
+    @Bus =  new EventEmitter() unless @Bus
     # init events
     @createEvents()
+    # init
+    @initialize( config ) if @initialize and typeof @initialize is 'function'
     @
 
 module.exports = Object
