@@ -54,7 +54,9 @@ hw: SPI bus mapping for this board:
       catch e
         console.log e
       p++
-    console.log '-------------------------------------------------'
+    console.log """
+hw: #{@dropLine()}
+    """
     @
 
 
