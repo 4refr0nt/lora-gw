@@ -60,7 +60,8 @@ cd ~
 git clone https://github.com/intel-iot-devkit/mraa.git
 cd mraa/src/spi
 ```
-* for Raspberri Pi comment out the following from /src/spi/spi.c
+
+for Raspberri Pi comment out the following from /src/spi/spi.c
 * // if (ioctl(dev->devfd, SPI_IOC_RD_MAX_SPEED_HZ, &speed) != -1) {
 * // if (speed < hz) {
 * // dev->clock = speed;
