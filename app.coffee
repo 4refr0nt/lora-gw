@@ -53,7 +53,7 @@ class App extends Proto
       return
     RF_frontend_count = 0
 
-    config.RF_frontend.forEach (element) =>
+    config.RF.forEach (element) =>
       if element.enabled
         if element.type is 'SPI_SX1276'
           if element.brand is 'NiceRF' or element.brand is 'HopeRF'
