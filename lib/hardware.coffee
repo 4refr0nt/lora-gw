@@ -30,6 +30,9 @@ hw: Pin count     : #{mraa.getPinCount()}
 hw: I2C bus count : #{mraa.getI2cBusCount()}
 -------------------------------------------------
     """
+    pins = @config.RF_frontend
+
+
     @
 
 

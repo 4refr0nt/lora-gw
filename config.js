@@ -28,7 +28,7 @@ module.exports = {
     user    : 'test',
     pass    : 'test',
   },
-  RF_frontend : [{
+  RF : [{
     type         : 'SPI_SX1276',
     enabled      : true,
     brand        : 'NiceRF',             // NiceRF or HopeRF
@@ -53,17 +53,18 @@ module.exports = {
     iqInverted   : false,                // for LoRa: [false: not inverted, true: inverted]
     rxContinuous : true                  // Sets the reception in continuous mode [false: single mode, true: continuous mode]
   }],
-  lcd : {
+  LCD : {
     type: 'I2C_LCD_SSD1306',
     enabled : true,
     i2c_bus : 0,     // bus: I2C bus number
     i2c_addr: 0x3C,  // I2C address
   },
-  // TODO choose name
+  // @TODO choose name
   stdout : {
     enabled : true
   },
+  // @TODO debug?
   debug: true,
   board_info: true, // print board info at startup
-  // TODO more options?
+  // @TODO more options?
 }
