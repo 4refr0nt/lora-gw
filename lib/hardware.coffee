@@ -14,11 +14,22 @@
 ###
 'use restrict'
 
-Proto   = require './proto'
+Proto = require './proto'
+mraa  = require 'mraa'
 
 class Hardware extends Proto
   initialize: (@config)->
     console.log  'Hardware: Init...', @config
+    mraa.setLogLevel(7) if @config.debug
+    console.log """
+-------------------------------------------------
+hw: MRAA Version  : #{mraa.getVersion()}
+hw: Board name    : #{mraa.getPlatformName()}
+hw: Platform type : #{mraa.getPlatformType()}
+hw: Pin count     : #{mraa.getPinCount()}
+hw: I2C bus count : #{mraa.getI2cBusCount()}
+-------------------------------------------------
+    """
     @
 
 
