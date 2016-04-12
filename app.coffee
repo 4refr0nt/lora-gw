@@ -21,9 +21,8 @@ pack    = require './package.json'
 
 # hardware = require './lib/hardware'
 Modem = require './lib/modem'
-# lcd = require './lib/lcd'
-
-
+Lcd = require './lib/lcd'
+Hardware = require './lib/hardware'
 
 class App extends Proto
   debug: 10
@@ -33,11 +32,9 @@ class App extends Proto
     Logger  : 'log'
     exit    : 'exit'
     SIGINT  : 'exit'
-
-  log:( msg, level)->
-    console.log msg
+  log:(msg, level)->
+    console.log level, msg
     @
-
 
   exit:->
     # @todo destroy
@@ -80,10 +77,17 @@ class App extends Proto
   initialize: (@config)->
     @Bus.emit 'Logger', "LoRa Gateway Version:  #{@version}  started.", 0
     @checkConfig @config
-    @modem = new Modem @config
-    @modem.Bus.on 'Logger', @log
+    # modem
+    # @modem = new Modem @config
+    # @modem.Bus.on 'Logger', @log
+    # Lcd
+    # @lcd = new Lcd @config.lcd
+    # @lcd.Bus.on 'Logger', @log
+    #
+    # Hardware
+    @hardware = new Hardware @config
+    @hardware.Bus.on 'Logger', @log
+
     @
 
 app = new App config
-
-app.modem.open()

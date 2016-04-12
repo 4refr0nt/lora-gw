@@ -14,7 +14,7 @@
 'use restrict'
 Proto   = require './proto'
 mraa    = require 'mraa'
-jsupm   = require 'jsupm_sx1276'
+jsupm   = require '/usr/local/lib/node_modules/jsupm_sx1276/jsupm_sx1276.node'
 
 class Modem extends Proto
   events:

@@ -23,6 +23,7 @@ class Object
         @Bus.emit 'Logger', "No #{@events[e]} function", 0
     @
 
+
   constructor:( config )->
     # create new Bus
     @Bus =  new EventEmitter() unless @Bus
