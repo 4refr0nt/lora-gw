@@ -18,8 +18,9 @@ Proto = require './proto'
 mraa  = require 'mraa'
 
 class Hardware extends Proto
-  initialize: (@config)->
-    console.log  'Hardware: Init...', @config
+  initialize: (@config)-> @
+  info : ->
+    @Bus.emmit 'Logger', 'Hardware: Init...', @config
     mraa.setLogLevel(7) if @config.debug
     console.log """
 -------------------------------------------------

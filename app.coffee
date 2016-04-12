@@ -87,6 +87,7 @@ class App extends Proto
     # Hardware
     @hardware = new Hardware @config
     @hardware.Bus.on 'Logger', @log
+    @hardware.info()
 
     @
 
