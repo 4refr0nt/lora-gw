@@ -39,10 +39,10 @@ Node.js LoRa Gateway For Raspberry Pi
 ```
 sudo apt-get update
 sudo apt-get -y install build-essential
-sudo apt-get -y install libpcre3 libpcre3-dev cmake autotools-dev nodejs-dev automake python-dev bison
+sudo apt-get -y install libpcre3 libpcre3-dev cmake autotools-dev automake python-dev bison git build-essential swig3.0 python-dev nodejs-dev cmake libboost-all-dev
 mkdir -p src
 ```
-* 5.2 Install latest SWIG from source code
+* 5.2 Install latest SWIG from source code(swig-3.0.9)
 ```
 cd ~/src
 git clone https://github.com/swig/swig.git
@@ -54,21 +54,28 @@ sudo make install
 ```
 * 5.3 Build hardware level MRAA library from source code
 ```
-cd ~
+cd ~/src
 git clone https://github.com/intel-iot-devkit/mraa.git
-cd mraa/src/spi
+cd mraa
+
+```
+# Comment out the following from src/spi/spi.c
+```
+nano src/spi/spi.c
 ```
 * for Raspberri Pi comment out the following from /src/spi/spi.c
+* 208 row
 * // if (ioctl(dev->devfd, SPI_IOC_RD_MAX_SPEED_HZ, &speed) != -1) {
 * // if (speed < hz) {
 * // dev->clock = speed;
 * // syslog(LOG_WARNING, "spi: Selected speed reduced to max allowed speed");
+* //  }
 * // }
 ```
-cd ~/mraa
-md build
-cd build
-cmake .. -DBUILDSWIGNODE=ON
+sudo npm -g i n
+sudo n
+mkdir build ; cd $_
+cmake .. -DBUILDSWIGNODE=ON -DBUILDSWIGPYTHON=OFF
 make install
 ```
 * 5.4 Build UPM library from source code (build may be more than 1 hrs)
@@ -76,10 +83,10 @@ make install
 cd ~
 git clone https://github.com/intel-iot-devkit/upm.git
 cd upm
-md build
-cd build
+mkdir build ; cd $_
 cmake .. -DCMAKE_CXX_FLAGS::STRING=-march=native -DCMAKE_C_FLAGS:STRING=-march=native
-make install
+make
+sudo make install
 ```
 ## 6. Install
 ```
