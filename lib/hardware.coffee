@@ -1,61 +1,63 @@
-'use restrict'
-mraa  = require 'mraa'
-debug = true
-module.exports =
-  ###*
-   * [open description]
-   * @param  {[type]} config [description]
-   * @return {[type]}        [description]
-  ###
-  info:(@opt) ->
-    if !@opt.board_info
-      return @
-    debug = @opt.debug
-    if @opt.debug
-      mraa.setLogLevel(7)
-    console.log '-------------------------------------------------'
-    console.log 'hw: MRAA Version  : ' + mraa.getVersion()
-    console.log 'hw: Board name    : ' + mraa.getPlatformName()
-    console.log 'hw: Platform type : ' + mraa.getPlatformType()
-    #console.log 'hw: Pin count     : ' + mraa.getPinCount()
-    console.log 'hw: I2C bus count : ' + mraa.getI2cBusCount()
-    console.log '-------------------------------------------------'
+###*
+  **     **    ***    ********  ********  **      **    ***    ********
+  **     **   ** **   **     ** **     ** **  **  **   ** **   **     **
+  **     **  **   **  **     ** **     ** **  **  **  **   **  **     **
+  ********* **     ** ********  **     ** **  **  ** **     ** ********
+  **     ** ********* **   **   **     ** **  **  ** ********* **   **
+  **     ** **     ** **    **  **     ** **  **  ** **     ** **    **
+  **     ** **     ** **     ** ********   ***  ***  **     ** **     **
+ *
+ * @author Victor Brutskiy <4refr0nt@gmail.com>
+ * @author Alex Suslov <suslov@me.com>
+ * @copyright 2016
+ * @license MIT
+###
 
-    pins = @opt.RF_frontend
-    pins.forEach (p,i) ->
-      console.log 'RF frontend ' + i + ' pinmaps'
-      try
-        console.log 'hw: RESET         : ' + mraa.getPinName p.reset
-      catch e
-        console.log "hw: RESET: can't be used. Please, remap pin: " + p.reset
-      try
-        console.log 'hw: SPI CS        : ' + mraa.getPinName p.spi_cs
-      catch e
-        console.log "hw: SPI CS: can't be used. Please, remap pin: " + p.chip_sel
-      try
-        console.log 'hw: DIO0          : ' + mraa.getPinName p.dio0
-      catch e
-        console.log "hw: DIO0: can't be used. Please, remap pin: " + p.dio0
-      if p.brand == 'NiceRF'
-        try
-          console.log 'hw: TX_EN         : ' + mraa.getPinName p.tx_en
-        catch e
-          console.log "hw: TX_EN can't be used. Please, remap pin: " + p.tx_en
-        try
-          console.log 'hw: RX_EN         : ' + mraa.getPinName p.rx_en
-        catch e
-          console.log "hw: RX_EN can't be used. Please, remap pin: " + p.rx_en
-    console.log '-------------------------------------------------'
-    console.log 'SPI bus mapping for this board:'
+'use restrict'
+
+Proto = require './proto'
+mraa  = require 'mraa'
+
+class Hardware extends Proto
+  initialize: (@config)-> @
+  dropLine: -> [0..50].map(->'-').join ''
+
+  info : ->
+    @Bus.emit 'Logger', 'Hardware: Init...', @config
+    mraa.setLogLevel(7) if @config.debug
+    console.log """
+hw: #{@dropLine()}
+hw: MRAA Version  : \t #{mraa.getVersion()}
+hw: Board name    : \t #{mraa.getPlatformName()}
+hw: Platform type : \t #{mraa.getPlatformType()}
+hw: Pin count     : \t #{mraa.getPinCount()}
+hw: I2C bus count : \t #{mraa.getI2cBusCount()}
+hw: #{@dropLine()}
+    """
+    @config.RF.forEach ( p, i) =>
+      console.log """
+hw: RF frontend #{i} pinmaps
+hw: RESET  : \t #{ mraa.getPinName p.reset }
+hw: SPI CS : \t #{ mraa.getPinName p.spi_cs }
+hw: DIO0   : \t #{ mraa.getPinName p.dio0 }
+hw: TX_EN  : \t #{ mraa.getPinName p.tx_en }
+hw: RX_EN  : \t #{ mraa.getPinName p.rx_en }
+hw: #{@dropLine()}
+hw: SPI bus mapping for this board:
+      """
     p = 0
     while p < mraa.getPinCount()
       try
         pName = mraa.getPinName p
         if /SPI/i.test(pName)
-          console.log "hw: pin: " + pName + " " + p
+          console.log "hw: pin: \t" + pName + " \t" + p
       catch e
+        console.log e
       p++
-    console.log '-------------------------------------------------'
+    console.log """
+hw: #{@dropLine()}
+    """
     @
 
 
+module.exports = Hardware

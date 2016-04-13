@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "getmac": "^1.0.7",
-    "lodash": "^4.9.0",
-    "mqtt": "^1.7.5"
+    "lodash": "^4.9.0"
   }
 }

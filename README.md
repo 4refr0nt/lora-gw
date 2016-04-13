@@ -8,6 +8,7 @@
                                                              __/ |
 (c) 2016 4refr0nt                                           |___/
 ```
+
 # LoRa Gateway
 Node.js LoRa Gateway For Raspberry Pi
 
@@ -39,7 +40,8 @@ Node.js LoRa Gateway For Raspberry Pi
 ```
 sudo apt-get update
 sudo apt-get -y install build-essential
-sudo apt-get -y install libpcre3 libpcre3-dev cmake autotools-dev automake python-dev bison git build-essential swig3.0 python-dev nodejs-dev cmake libboost-all-dev
+sudo apt-get -y install libpcre3 libpcre3-dev cmake autotools-dev nodejs-dev automake python-dev bison
+cd ~
 mkdir -p src
 ```
 * 5.2 Install latest SWIG from source code(swig-3.0.9)
@@ -63,8 +65,8 @@ cd mraa
 ```
 nano src/spi/spi.c
 ```
-* for Raspberri Pi comment out the following from /src/spi/spi.c
 * 208 row
+for Raspberri Pi comment out the following from src/spi/spi.c
 * // if (ioctl(dev->devfd, SPI_IOC_RD_MAX_SPEED_HZ, &speed) != -1) {
 * // if (speed < hz) {
 * // dev->clock = speed;
