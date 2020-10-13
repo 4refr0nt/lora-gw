@@ -111,9 +111,9 @@ node index.js
 ## 9. Connections
 See [MRAA pin numbers for Raspberri Pi](http://iotdk.intel.com/docs/master/mraa/rasppi.html)
 
-Raspberry Pi | Transceiver
-| :---:| :---: | :---: |
-MOSI | 19 | MOSI
-MISO | 21 | MISO
-CLK  | 23 | SCK
-CS0  | 24 | NSS
+| Raspberry Pi | Pin | Transceiver |
+| :---: | :---: | :---: |
+| MOSI | 19 | MOSI |
+| MISO | 21 | MISO |
+| CLK  | 23 | SCK |
+| CS0  | 24 | NSS |
